@@ -22,10 +22,10 @@ Bibliothèques nécéssaires: (installe les paquets de déveleoppement si vous v
 ## Comment compiler?
 Il y'a un "Makefile" dans le dossier racine, donc c'est aussi simple que ca:
 * Installe les bibliothèques mentionés dans Dépendances avec leur paquets de developpement, une "toolchain" de compilation, et enfin "make"
-* Run "make -j4" and then you can run the game from "bin/neptune"
-* Have fun!
+* Lance "make -j4" et puis vous pouvez lancer l'exécutable du jeu, intitulé "bin/neptune"
+* Que le fun commence!
 
-## Acknowledgements
-The following libraries are shipped in the game's code, due to their "generator" nature:
-* GLAD: OpenGL loader
-* plthook: Hook into system function for better logging.
+## Crédits
+Les bibliothèques suivantes sont intégrés dans le jeu due a leur nature
+* GLAD: Gère l'OpenGL
+* plthook: Redirige des appels de fonctions vers d'autre fonctions

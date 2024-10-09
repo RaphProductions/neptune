@@ -15,6 +15,10 @@ namespace neptune::client::native {
             printf("base platform");
             return Window();
         }
+
+        virtual Event nextEvent_wnd(Window *w) {
+            return Event();
+        }
     };
 
     class PlatformManager {

@@ -1,5 +1,6 @@
 #include "client/native/PlatformManager.hpp"
 #include "client/wm.hpp"
+#include <cstdlib>
 
 #ifdef __linux__
 
@@ -14,6 +15,45 @@
 
 using namespace neptune;
 
+client::EventType xEventBindingTable[LASTEvent] = {
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_KeyPress,
+    client::E_KeyRelease,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Expose,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+    client::E_Inexistant,
+};
+
 class Platform_Linux : public client::native::Platform {
 private:
     void createGL() {
@@ -21,12 +61,15 @@ private:
     }
 public:
     virtual void ctor() override {
-        printf("Creating Linux platform...\n");
+        
+        
+        //printf("Creating Linux platform...\n");
     }
 
     virtual client::Window createWindow(std::string title, int w, int h) override {
         client::NativeWindow nw;
 
+        nw.event = malloc(sizeof(XEvent));
         nw.display = (void*)XOpenDisplay(NULL);
         int s = DefaultScreen(nw.display);
 
@@ -36,8 +79,6 @@ public:
         XMapWindow((Display*)nw.display, (Window)nw.handle);
         XStoreName((Display *)nw.display, nw.handle, title.c_str());
         
-        //printf("linux platform\n");
-
         client::Window wnd;
         wnd.width = w;
         wnd.height = h;
@@ -46,6 +87,15 @@ public:
         wnd.isEmptyWindow = false;
 
         return wnd;
+    }
+
+    virtual client::Event nextEvent_wnd(client::Window *w) override {
+        client::Event ev;
+
+        XNextEvent((Display*)w->nw.display, (XEvent*)w->nw.event);
+        ev.type = xEventBindingTable[((XEvent*)w->nw.event)->type];
+
+        return ev;
     }
 };
 
