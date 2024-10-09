@@ -28,4 +28,4 @@ Il y'a un "Makefile" dans le dossier racine, donc c'est aussi simple que ca:
 ## Crédits
 Les bibliothèques suivantes sont intégrés dans le jeu due a leur nature
 * GLAD: Gère l'OpenGL
-* plthook: Redirige des appels de fonctions vers d'autre fonctions
+* plthook: Redirige des appels de fonctions vers d'autre fonctions (en modifiant la "Procedure Linkage Table")
