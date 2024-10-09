@@ -1,4 +1,4 @@
-bin/
-obj/
-.cache/
-compile_commands.json
+/bin/
+/obj/
+/.cache/
+/compile_commands.json
