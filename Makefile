@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Isrc -I/usr/include/freetype2 -g -ggdb -rdynamic
+CXXFLAGS = -std=c++17 -Wall -Wextra -fno-stack-protector -Isrc -I/usr/include/freetype2 -g -ggdb -rdynamic
 CPPFLAGS = -DBOOST_STACKTRACE_USE_ADDR2LINE
 
 PLATFORM = LINUX

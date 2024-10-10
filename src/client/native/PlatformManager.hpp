@@ -1,23 +1,31 @@
 #pragma once
 
-#include "client/wm.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <memory>
 #include <string>
+#include <client/wm.hpp>
 
 namespace neptune::client::native {
     class Platform {
     public:
         virtual void ctor() { }
 
-        virtual Window createWindow(std::string title, int w, int h) {
+        virtual neptune::client::Window createWindow(std::string title, int w, int h) {
             printf("base platform");
-            return Window();
+            return neptune::client::Window();
         }
 
-        virtual Event nextEvent_wnd(Window *w) {
-            return Event();
+        virtual neptune::client::Event nextEvent_wnd(neptune::client::Window *w) {
+            return neptune::client::Event();
+        }
+
+        virtual void makeGLContextCurrent(neptune::client::NativeWindow w) {
+
+        }
+
+        virtual void glSwapBuffers(neptune::client::NativeWindow w) {
+
         }
     };
 

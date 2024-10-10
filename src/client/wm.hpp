@@ -36,6 +36,9 @@ namespace neptune::client {
         std::string title;
         NativeWindow nw;
 
+        void glMakeContextCurrent();
+        void glSwapBuffers();
+
         Event nextEvent();
     };
 

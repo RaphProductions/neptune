@@ -1,5 +1,6 @@
 #include "client/native/PlatformManager.hpp"
 #include "client/wm.hpp"
+#include "util/err.hpp"
 #include <cstdlib>
 #include <dlfcn.h>
 
@@ -75,14 +76,38 @@ public:
         int s = DefaultScreen(nw.display);
 
         // Load GLX
-        gladLoaderLoadGLX((Display*)nw.display, s);
-
-        nw.handle = XCreateSimpleWindow((Display*)nw.display, RootWindow((Display*)nw.display, s), 40, 40, w, h, 0, BlackPixel((Display*)nw.display, s), WhitePixel((Display*)nw.display, s));
+        int glx_ver = gladLoaderLoadGLX((Display*)nw.display, s);
+        if (glx_ver == 0)
+        {
+            throw neptune::utils::NeptuneException("Unable to load the OpenGL-X11 connector!");
+        }
         
-        XSelectInput((Display*)nw.display, (Window)nw.handle, ExposureMask | KeyPressMask);
+        // Get the visual info
+        Window root = RootWindow(nw.display, s);
+
+        GLint visual_attributes[] = { GLX_RGBA, GLX_DOUBLEBUFFER, None };
+        XVisualInfo *visual_info = glXChooseVisual((Display *)nw.display, s, visual_attributes);
+        
+        Colormap colormap = XCreateColormap((Display *)nw.display, root, visual_info->visual, AllocNone);
+
+        XSetWindowAttributes attributes;
+        attributes.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
+        attributes.colormap = colormap;
+
+        // Create a Bimbow
+        nw.handle = XCreateWindow((Display *)nw.display, root, 0, 0, w, h, 0,
+                      visual_info->depth, InputOutput, visual_info->visual,
+                      CWColormap | CWEventMask, &attributes);
+
+        
         XMapWindow((Display*)nw.display, (Window)nw.handle);
         XStoreName((Display *)nw.display, nw.handle, title.c_str());
         
+        // Now create the OpenGL context.
+        GLXContext ctx = glXCreateContext((Display*)nw.display, visual_info, NULL, GL_TRUE);
+        nw.gl_context = (void*)ctx;
+
+        // Create the toplevel window object
         client::Window wnd;
         wnd.width = w;
         wnd.height = h;
@@ -100,6 +125,14 @@ public:
         ev.type = xEventBindingTable[((XEvent*)w->nw.event)->type];
 
         return ev;
+    }
+
+    virtual void makeGLContextCurrent(client::NativeWindow w) override {
+        glXMakeContextCurrent((Display*)w.display, w.handle, w.handle, (GLXContext)w.gl_context);
+    }
+
+    virtual void glSwapBuffers(client::NativeWindow w) override {
+        glXSwapBuffers((Display *)w.display, w.handle);
     }
 };
 
