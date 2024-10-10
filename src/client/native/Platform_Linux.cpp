@@ -1,6 +1,7 @@
 #include "client/native/PlatformManager.hpp"
 #include "client/wm.hpp"
 #include <cstdlib>
+#include <dlfcn.h>
 
 #ifdef __linux__
 
@@ -9,6 +10,7 @@
 // of 'Window', BECAUSE I HAVE NOW AMBIGUOUS REFERENCES!
 // AHHHHH
 
+#include <client/glad/glx.h>
 #include "Platform_Linux.hpp"
 #include <memory>
 #include <X11/Xlib.h>
@@ -56,8 +58,7 @@ client::EventType xEventBindingTable[LASTEvent] = {
 
 class Platform_Linux : public client::native::Platform {
 private:
-    void createGL() {
-        
+    void init_GL() {
     }
 public:
     virtual void ctor() override {
@@ -72,6 +73,9 @@ public:
         nw.event = malloc(sizeof(XEvent));
         nw.display = (void*)XOpenDisplay(NULL);
         int s = DefaultScreen(nw.display);
+
+        // Load GLX
+        gladLoaderLoadGLX((Display*)nw.display, s);
 
         nw.handle = XCreateSimpleWindow((Display*)nw.display, RootWindow((Display*)nw.display, s), 40, 40, w, h, 0, BlackPixel((Display*)nw.display, s), WhitePixel((Display*)nw.display, s));
         

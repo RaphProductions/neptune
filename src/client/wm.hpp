@@ -24,6 +24,7 @@ namespace neptune::client {
         // Window's handle: HWND on Window, XWindow on Linux/X11, NSWindow on macOS
         void *display;
         void *event;
+        void *gl_context;
         unsigned long handle;  
     };
 
